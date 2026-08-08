@@ -1,0 +1,291 @@
+/* GestureHome Phase 1 - styles.css
+   Only controls LOOKS (colours, sizes, layout). No logic. */
+
+/* Global colour variables - change one place, whole app updates */
+:root {
+  --bg: #0f1419;        /* Dark page background */
+  --surface: #1a2332;   /* Panels and header background */
+  --border: #2d3a4f;    /* Border lines */
+  --text: #e8eef7;      /* Main light text */
+  --muted: #8b9cb3;     /* Grey secondary text */
+  --accent: #3dd6c3;    /* Teal highlight (live dot, links) */
+  --accent-dim: #2a9d8f; /* Darker teal (reserved) */
+  --warn: #f4a261;      /* Orange warning */
+  --danger: #e0533d;    /* Red errors */
+  --led-on: #ffe566;    /* Yellow when on-screen LED is "on" */
+  --led-off: #3d4a5c;   /* Grey when on-screen LED is "off" */
+}
+
+/* All elements: padding counts inside width (easier layout math) */
+* {
+  box-sizing: border-box;
+}
+
+/* Whole page body */
+body {
+  margin: 0;                    /* Remove browser default margin */
+  min-height: 100vh;            /* At least full screen height */
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Top header bar */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+/* Logo group: dot + title + phase tag */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Small "Phase 1" badge */
+.phase-tag {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  background: var(--border);
+  color: var(--muted);
+}
+
+/* Status dot default (grey idle) */
+.brand-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+/* JS sets class "live" - tracking hands (teal) */
+.brand-dot.live {
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+
+/* JS sets class "armed" - gesture building (orange) */
+.brand-dot.armed {
+  background: var(--warn);
+  box-shadow: 0 0 8px var(--warn);
+}
+
+/* Status text in header */
+.status-line {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* Main grid: camera left, panel right */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr minmax(240px, 320px);
+  gap: 1rem;
+  padding: 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* On narrow screens: stack camera above panel */
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Wraps camera box + hint text */
+.stage-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Black camera stage (16:9 widescreen box) */
+.stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 70vh;
+  background: #000;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+/* Hide raw <video> - we only show the canvas */
+#webcam {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Visible canvas fills the stage */
+#sceneCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Hint row under camera */
+.hint-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Right side control panel */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+}
+
+.panel h2 {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.panel h2:not(:first-child) {
+  margin-top: 1.25rem;
+}
+
+/* On-screen LED status card */
+.led-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: var(--bg);
+  border-radius: 8px;
+}
+
+/* LED circle - off state (grey) */
+.led-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--led-off);
+  border: 2px solid var(--border);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+/* JS adds class "on" - yellow glow */
+.led-icon.on {
+  background: var(--led-on);
+  box-shadow: 0 0 20px rgba(255, 229, 102, 0.6);
+  border-color: var(--led-on);
+}
+
+.led-label {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.led-state {
+  margin: 0.15rem 0 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Bridge status line - JS changes colour */
+.bridge-line {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* Row of manual test buttons */
+.btn-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+button {
+  flex: 1;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Small help text at bottom of panel */
+.footnote {
+  margin: 1rem 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.footnote code {
+  font-size: 0.7rem;
+}
+
+/* Full-screen loading overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: rgba(15, 20, 25, 0.92);
+  z-index: 100;
+}
+
+/* JS adds "hidden" when AI is ready */
+.overlay.hidden {
+  display: none;
+}
+
+/* Red error bar at bottom */
+.error-banner {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  background: var(--danger);
+  color: #fff;
+  border-radius: 8px;
+  z-index: 101;
+}
+
+/* Generic hide class used by JS */
+.hidden {
+  display: none !important;
+}
