@@ -14,15 +14,15 @@ Chrome (camera + UI)  →  bridge.py (FastAPI)  →  USB serial  →  gesture_ho
 
 | Layer | Path |
 |-------|------|
-| Web UI | `web/`, MediaPipe in browser |
-| Bridge | `bridge/bridge.py`, port **8090** |
-| Firmware | `firmware/gesture_home/gesture_home.ino` |
+| Web UI | `web/` - MediaPipe in browser |
+| Bridge | `bridge/bridge.py` - port **8090** |
+| Firmware | `firmware/gesture_home.ino` |
 
 ## Quick start
 
 ### 1. Firmware
 
-Upload `firmware/gesture_home/gesture_home.ino` to Keyestudio PLUS (Arduino UNO). Test Serial Monitor at 9600: `LIGHTS_ON` / `LIGHTS_OFF`.
+Upload `firmware/gesture_home.ino` to Keyestudio PLUS (Arduino UNO). Test Serial Monitor at 9600: `LIGHTS_ON` / `LIGHTS_OFF`.
 
 ### 2. Bridge + web
 

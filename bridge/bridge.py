@@ -1,5 +1,5 @@
 """
-GestureHome bridge, FastAPI HTTP API → USB serial → Keyestudio house.
+GestureHome bridge - FastAPI HTTP API → USB serial → Keyestudio house.
 
 Phase 1 commands: LIGHTS_ON, LIGHTS_OFF
 
@@ -21,7 +21,7 @@ from fastapi.staticfiles import StaticFiles  # Serve css/ and js/ folders
 from pydantic import BaseModel, Field  # Validate JSON bodies (cmd field)
 
 try:
-    import serial  # pyserial, talk to Arduino over USB
+    import serial  # pyserial - talk to Arduino over USB
     from serial import SerialException  # Error when port won't open
 except ImportError:
     serial = None  # pyserial not installed
@@ -56,7 +56,7 @@ _last_cmd_at: float = 0.0  # Unix time when last command was sent
 
 
 class CommandBody(BaseModel):
-    """JSON body for POST /command, browser sends {"cmd": "LIGHTS_ON"}"""
+    """JSON body for POST /command - browser sends {"cmd": "LIGHTS_ON"}"""
     cmd: str = Field(..., examples=["LIGHTS_ON"])
 
 
@@ -84,7 +84,7 @@ def open_serial(port: str, baud: int = 9600) -> None:
             "pyserial not installed. Run: conda activate home && pip install pyserial"
         )
     _serial = serial.Serial(port, baud, timeout=0.1)  # Open port at 9600 baud
-    time.sleep(2.0)  # Arduino resets when USB opens, wait for it to boot
+    time.sleep(2.0)  # Arduino resets when USB opens - wait for it to boot
     _serial.reset_input_buffer()  # Clear junk bytes from reset
 
 
@@ -126,7 +126,7 @@ def health():
 
 @app.post("/command", response_model=CommandResponse)
 def command(body: CommandBody):
-    """Browser sends {"cmd":"LIGHTS_ON"}, we forward it to serial."""
+    """Browser sends {"cmd":"LIGHTS_ON"} - we forward it to serial."""
     cmd = body.cmd.strip().upper()
     if cmd not in VALID_COMMANDS:
         raise HTTPException(status_code=400, detail=f"Invalid command: {cmd}")

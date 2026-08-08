@@ -1,12 +1,69 @@
-# GestureHome documentation (legacy filename)
+# GestureHome - Phase 1
 
-**Phase-based docs were replaced.** Use these instead:
+## Goal
 
-| Topic | Document |
-|-------|----------|
-| Home page, wiring diagram, quick start | [README.md](../README.md) |
-| Full user manual (gestures, keys, troubleshooting) | [MANUAL.md](MANUAL.md) |
-| Hardware wiring, upload, Serial Monitor | [ARDUINO_LED.md](ARDUINO_LED.md) |
-| Branch layout | [BRANCHES.md](BRANCHES.md) |
+One gesture → one actuator: **both hands up/down** controls the **white LED** on pin 13 (typical KS0085 wiring).
 
-The current demo controls lights, fan, door, LCD, buzzer, and PIR security via `home_controller.py` and `gesture_home.ino`.
+## Two codes only
+
+```text
+home_controller.py  ←→  gesture_home.ino  ←→  LED (pin 13)
+     (laptop)              (Keyestudio)
+```
+
+## Hardware checklist
+
+| Item | Required |
+|------|----------|
+| Keyestudio PLUS + sensor shield | Yes |
+| USB cable | Yes |
+| Laptop webcam | Yes |
+| White LED module on D13 | Yes (usually pre-wired on shield) |
+| Fan, servo, relay, LCD, PIR, MQ-2 | No (Phase 2+) |
+
+Confirm kit model on the box (assumed **KS0085**).
+
+## Phase 0 (optional)
+
+Use the kit’s factory blink sketch before uploading `gesture_home.ino`.
+
+## Phase 1 test script
+
+1. Upload `firmware/gesture_home.ino`.
+2. Serial Monitor: `LIGHTS_ON` → LED on; `LIGHTS_OFF` → off.
+3. `conda activate home`
+4. `python home_controller.py`
+5. OpenCV window: test keys `o` / `f`, then both-hands-up / both-hands-down.
+
+## Python environment
+
+```bash
+conda activate home
+pip install -r requirements.txt
+```
+
+## Serial protocol
+
+Line-based ASCII, 9600 baud, newline-terminated:
+
+- `LIGHTS_ON`
+- `LIGHTS_OFF`
+
+Arduino responds with `OK LIGHTS_ON` or `OK LIGHTS_OFF`.
+
+## Tuning gestures
+
+In `home_controller.py`:
+
+- `HANDS_UP_Y` - default `0.42`
+- `HANDS_DOWN_Y` - default `0.58`
+- `COOLDOWN_S` - default `1.5`
+- `STABLE_FRAMES` - default `4`
+
+## Optional: browser UI
+
+See `bridge/` + `web/` for the older Chrome + FastAPI stack (port 8090). Not required for Phase 1.
+
+## Next (Phase 2)
+
+Right pinch → door servo; left pinch → fan; fist hold → away mode; wide hands → brightness.

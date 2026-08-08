@@ -1,7 +1,7 @@
-/* GestureHome Phase 1, styles.css
+/* GestureHome Phase 1 - styles.css
    Only controls LOOKS (colours, sizes, layout). No logic. */
 
-/* Global colour variables, change one place, whole app updates */
+/* Global colour variables - change one place, whole app updates */
 :root {
   --bg: #0f1419;        /* Dark page background */
   --surface: #1a2332;   /* Panels and header background */
@@ -71,13 +71,13 @@ body {
   background: var(--muted);
 }
 
-/* JS sets class "live", tracking hands (teal) */
+/* JS sets class "live" - tracking hands (teal) */
 .brand-dot.live {
   background: var(--accent);
   box-shadow: 0 0 8px var(--accent);
 }
 
-/* JS sets class "armed", gesture building (orange) */
+/* JS sets class "armed" - gesture building (orange) */
 .brand-dot.armed {
   background: var(--warn);
   box-shadow: 0 0 8px var(--warn);
@@ -126,7 +126,7 @@ body {
   border: 1px solid var(--border);
 }
 
-/* Hide raw <video>, we only show the canvas */
+/* Hide raw <video> - we only show the canvas */
 #webcam {
   position: absolute;
   width: 1px;
@@ -182,7 +182,7 @@ body {
   border-radius: 8px;
 }
 
-/* LED circle, off state (grey) */
+/* LED circle - off state (grey) */
 .led-icon {
   width: 48px;
   height: 48px;
@@ -192,7 +192,7 @@ body {
   transition: background 0.2s, box-shadow 0.2s;
 }
 
-/* JS adds class "on", yellow glow */
+/* JS adds class "on" - yellow glow */
 .led-icon.on {
   background: var(--led-on);
   box-shadow: 0 0 20px rgba(255, 229, 102, 0.6);
@@ -211,7 +211,7 @@ body {
   font-weight: 600;
 }
 
-/* Bridge status line, JS changes colour */
+/* Bridge status line - JS changes colour */
 .bridge-line {
   margin: 0;
   font-size: 0.9rem;

@@ -1,24 +1,18 @@
 #!/usr/bin/env python3
 """
-GestureHome: Python + Arduino.
+GestureHome Phase 1 - Python + Arduino only.
 
-Webcam + MediaPipe → USB serial → Keyestudio LED (D13) + fan (D7/D6).
+Webcam + MediaPipe hand tracking → USB serial → Keyestudio LED (pin 13).
 
 Run:
   conda activate home
   python home_controller.py
 
-Keys: o/f = lights, 1/2/3 = fan speed, 0 = fan stop, d = door toggle, q = quit
-Gestures (two hands):
-  two closed fists 2s → door open/close (toggle)
-Gestures (one hand):
-  fist 3s → lights ON | open palm 3s → lights OFF
-  1/2/3 fingers held 2s → fan speed 1/2/3 | thumbs up 2s → fan STOP
-  wave 2s OR two open palms (10 fingers) 2s → security ON/OFF (PIR alarm)
+Keys: o = lights on, f = lights off, q = quit
+Gestures: both hands up → LIGHTS_ON, both hands down → LIGHTS_OFF
 """
 
 import argparse
-import math
 import os
 import sys
 import time
@@ -43,36 +37,14 @@ MODEL_URL = (
     "hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task"
 )
 
-# --- Gesture rules ---
-HOLD_S = 3.0          # Hold pose this many seconds for lights
-FAN_HOLD_S = 2.0      # Hold pose for fan speed / stop
-DOOR_HOLD_S = 2.0     # Hold two closed fists for door toggle
-SEC_HOLD_S = 2.0      # Wave or 10 fingers to arm/disarm security
-COOLDOWN_S = 0.5      # Brief gap after a command before next trigger
-WAVE_WINDOW = 24
-WAVE_MIN_AMP = 0.07
-WAVE_MIN_SWINGS = 3
-VALID_COMMANDS = frozenset({"LIGHTS_ON", "LIGHTS_OFF", "HOLD_ON", "HOLD_OFF"})
+# --- Rules (same as the old web/gestures.js) ---
+COOLDOWN_S = 1.5
+STABLE_FRAMES = 4
+HANDS_UP_Y = 0.42
+HANDS_DOWN_Y = 0.58
+VALID_COMMANDS = frozenset({"LIGHTS_ON", "LIGHTS_OFF"})
 HAND_CONNECTIONS = HandLandmarksConnections.HAND_CONNECTIONS
 SKELETON_COLOR = (61, 214, 195)
-
-# MediaPipe hand landmark indices
-LM_WRIST = 0
-LM_THUMB_TIP = 4
-LM_INDEX_MCP = 5
-LM_INDEX_TIP = 8
-LM_MIDDLE_MCP = 9
-LM_MIDDLE_TIP = 12
-LM_RING_MCP = 13
-LM_RING_TIP = 16
-LM_PINKY_MCP = 17
-LM_PINKY_TIP = 20
-FINGER_TIP_MCP_PAIRS = [
-    (LM_INDEX_TIP, LM_INDEX_MCP),
-    (LM_MIDDLE_TIP, LM_MIDDLE_MCP),
-    (LM_RING_TIP, LM_RING_MCP),
-    (LM_PINKY_TIP, LM_PINKY_MCP),
-]
 
 
 def ensure_model() -> Path:
@@ -124,145 +96,22 @@ def open_serial(port: str, baud: int = 9600) -> serial.Serial:
     return ser
 
 
-def send_command(
-    ser: Optional[serial.Serial],
-    cmd: str,
-    *,
-    simulate_ok: bool = False,
-) -> bool:
-    """Send to serial, or update UI-only when simulate_ok (--no-serial preview)."""
-    cmd = cmd.strip().upper()
+def send_command(ser: Optional[serial.Serial], cmd: str) -> bool:
     if ser is None or not ser.is_open:
-        if simulate_ok:
-            print(f"[preview] {cmd} (no USB, on-screen LED only)")
-            return True
         print(f"[serial] skipped (not connected): {cmd}")
         return False
-    line = (cmd + "\n").encode("ascii")
+    line = (cmd.strip().upper() + "\n").encode("ascii")
     ser.write(line)
     ser.flush()
-    print(f"[serial] sent {cmd}")
+    print(f"[serial] sent {cmd.strip().upper()}")
     return True
 
 
-def landmark_dist(a, b) -> float:
-    return math.hypot(a.x - b.x, a.y - b.y)
-
-
-def is_fist(landmarks) -> bool:
-    """Four fingers curled toward wrist (closed hand)."""
-    wrist = landmarks[LM_WRIST]
-    curled = 0
-    for tip_i, mcp_i in FINGER_TIP_MCP_PAIRS:
-        if landmark_dist(landmarks[tip_i], wrist) < landmark_dist(landmarks[mcp_i], wrist):
-            curled += 1
-    return curled >= 4
-
-
-def is_open_palm(landmarks) -> bool:
-    """Fingers and thumb extended (open palm facing camera)."""
-    wrist = landmarks[LM_WRIST]
-    extended = 0
-    for tip_i, mcp_i in FINGER_TIP_MCP_PAIRS:
-        if landmark_dist(landmarks[tip_i], wrist) > landmark_dist(landmarks[mcp_i], wrist) * 1.02:
-            extended += 1
-    thumb_open = landmark_dist(landmarks[LM_THUMB_TIP], wrist) > landmark_dist(
-        landmarks[LM_INDEX_MCP], wrist
-    ) * 0.85
-    return extended >= 4 and thumb_open
-
-
-def count_extended_fingers(landmarks) -> int:
-    """Count extended index/middle/ring/pinky (thumb excluded)."""
-    wrist = landmarks[LM_WRIST]
-    count = 0
-    for tip_i, mcp_i in FINGER_TIP_MCP_PAIRS:
-        if landmark_dist(landmarks[tip_i], wrist) > landmark_dist(landmarks[mcp_i], wrist) * 1.02:
-            count += 1
-    return count
-
-
-def is_thumbs_up(landmarks) -> bool:
-    """Thumb pointing up, other fingers curled."""
-    wrist = landmarks[LM_WRIST]
-    thumb_tip = landmarks[LM_THUMB_TIP]
-    index_mcp = landmarks[LM_INDEX_MCP]
-    if thumb_tip.y >= wrist.y - 0.04:
-        return False
-    if thumb_tip.y >= index_mcp.y - 0.02:
-        return False
-    curled = 0
-    for tip_i, mcp_i in FINGER_TIP_MCP_PAIRS:
-        if landmark_dist(landmarks[tip_i], wrist) < landmark_dist(landmarks[mcp_i], wrist):
-            curled += 1
-    return curled >= 3
-
-
-def is_ten_fingers(hand_list) -> bool:
-    """Both hands open: 10 fingers (5 per hand)."""
-    if len(hand_list) < 2:
-        return False
-    return is_open_palm(hand_list[0]) and is_open_palm(hand_list[1])
-
-
-def update_wave_history(landmarks, history: list) -> None:
-    history.append(landmarks[LM_WRIST].x)
-    if len(history) > WAVE_WINDOW:
-        history.pop(0)
-
-
-def is_waving(history: list) -> bool:
-    if len(history) < WAVE_WINDOW:
-        return False
-    min_x = min(history)
-    max_x = max(history)
-    if max_x - min_x < WAVE_MIN_AMP:
-        return False
-    swings = 0
-    for i in range(2, len(history)):
-        d1 = history[i - 1] - history[i - 2]
-        d2 = history[i] - history[i - 1]
-        if d1 * d2 < 0 and abs(d1) > 0.008 and abs(d2) > 0.008:
-            swings += 1
-    return swings >= WAVE_MIN_SWINGS
-
-
-def is_security_gesture(hand_list, wave_history: list) -> bool:
-    if is_ten_fingers(hand_list):
-        return True
-    if len(hand_list) >= 1:
-        update_wave_history(hand_list[0], wave_history)
-        return is_waving(wave_history)
-    return False
-
-
-def detect_two_hand_pose(hand_list) -> Optional[str]:
-    """Two-hand poses (need both hands visible)."""
-    if len(hand_list) < 2:
+def average_wrist_y(hand_landmarks_list) -> Optional[float]:
+    if not hand_landmarks_list:
         return None
-    if is_fist(hand_list[0]) and is_fist(hand_list[1]):
-        return "two_fists"
-    return None
-
-
-def detect_single_hand_pose(landmarks) -> Optional[str]:
-    """Return active pose id or None."""
-    if is_thumbs_up(landmarks):
-        return "thumb_stop"
-    fist = is_fist(landmarks)
-    palm = is_open_palm(landmarks)
-    if fist and not palm:
-        return "fist"
-    if palm and not fist:
-        return "palm"
-    finger_count = count_extended_fingers(landmarks)
-    if finger_count == 1:
-        return "fan1"
-    if finger_count == 2:
-        return "fan2"
-    if finger_count == 3:
-        return "fan3"
-    return None
+    total = sum(hand[0].y for hand in hand_landmarks_list)
+    return total / len(hand_landmarks_list)
 
 
 def draw_hand_skeleton(frame, landmarks) -> None:
@@ -318,7 +167,7 @@ def run_self_test(camera_index: int) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="GestureHome LED + fan control")
+    parser = argparse.ArgumentParser(description="GestureHome Phase 1 (Python + Arduino)")
     parser.add_argument(
         "--port",
         default=os.environ.get("GESTURE_HOME_PORT", ""),
@@ -365,31 +214,16 @@ def main() -> None:
     landmarker = create_landmarker()
 
     lights_on = False
-    fan_speed = 0
-    door_open = False
     last_command_at = 0.0
-    fist_since: Optional[float] = None
-    palm_since: Optional[float] = None
-    fan_since: Optional[float] = None
-    fan_pose: Optional[str] = None
-    door_since: Optional[float] = None
-    security_since: Optional[float] = None
-    wave_history: list[float] = []
-    hold_blink_sent = False
-    security_armed = False
-    status_msg = "Wave/10 fingers→SEC | 2 fists→door"
-    window = "GestureHome (q=quit)"
+    stable_up = 0
+    stable_down = 0
+    status_msg = "Raise both hands to turn lights on"
+    window = "GestureHome Phase 1 (q=quit, o=on, f=off)"
     frame_start_ms = int(time.time() * 1000)
     frame_idx = 0
-    simulate = args.no_serial
 
     print(window)
-    print("Two closed fists 2s → door open/close (toggle)")
-    print("Open palm 3s → lights OFF | Closed fist 3s → lights ON")
-    print("1/2/3 fingers held 2s → fan speed | Thumbs up 2s → fan STOP")
-    print("Wave 2s OR two open palms 2s → security ON/OFF (PIR → alarm)")
-    if simulate:
-        print("Preview mode: on-screen status only. Omit --no-serial for real hardware.")
+    print("Gestures: both hands UP → on, both hands DOWN → off")
 
     while True:
         ok, frame = cap.read()
@@ -413,201 +247,58 @@ def main() -> None:
         now = time.time()
         cooled_down = (now - last_command_at) >= COOLDOWN_S
 
-        if len(hand_list) < 1:
-            if hold_blink_sent:
-                send_command(ser, "HOLD_OFF", simulate_ok=simulate)
-                hold_blink_sent = False
-            fist_since = None
-            palm_since = None
-            fan_since = None
-            fan_pose = None
-            door_since = None
-            security_since = None
-            wave_history.clear()
-            status_msg = "Show your hand(s) to the camera"
-        elif len(hand_list) >= 2 and detect_two_hand_pose(hand_list) == "two_fists":
-            fist_since = None
-            palm_since = None
-            fan_since = None
-            fan_pose = None
-            security_since = None
-            wave_history.clear()
-            if hold_blink_sent:
-                send_command(ser, "HOLD_OFF", simulate_ok=simulate)
-                hold_blink_sent = False
-            if door_since is None:
-                door_since = now
-            held = now - door_since
-            next_state = "CLOSE" if door_open else "OPEN"
-            status_msg = f"2 fists {held:.1f}s / {DOOR_HOLD_S}s → door {next_state}"
-            if held >= DOOR_HOLD_S and cooled_down:
-                if send_command(ser, "DOOR_TOGGLE", simulate_ok=simulate):
-                    door_open = not door_open
-                    last_command_at = now
-                    door_since = None
-                    status_msg = f"Door {'OPEN' if door_open else 'CLOSE'}!"
-        elif is_security_gesture(hand_list, wave_history):
-            fist_since = None
-            palm_since = None
-            fan_since = None
-            fan_pose = None
-            door_since = None
-            if hold_blink_sent:
-                send_command(ser, "HOLD_OFF", simulate_ok=simulate)
-                hold_blink_sent = False
-            if security_since is None:
-                security_since = now
-            held = now - security_since
-            gesture_hint = "10 fingers" if is_ten_fingers(hand_list) else "wave"
-            next_state = "OFF" if security_armed else "ON"
-            status_msg = f"{gesture_hint} {held:.1f}s / {SEC_HOLD_S}s SEC {next_state}"
-            if held >= SEC_HOLD_S and cooled_down:
-                cmd = "SECURITY_OFF" if security_armed else "SECURITY_ON"
-                if send_command(ser, cmd, simulate_ok=simulate):
-                    security_armed = not security_armed
-                    last_command_at = now
-                    security_since = None
-                    wave_history.clear()
-                    status_msg = f"Security {'ON' if security_armed else 'OFF'}!"
+        if len(hand_list) < 2:
+            stable_up = 0
+            stable_down = 0
+            status_msg = "Show both hands"
         else:
-            security_since = None
-            wave_history.clear()
-            lm = hand_list[0]
-            door_since = None
-            pose = detect_single_hand_pose(lm)
-
-            if pose == "fist":
-                palm_since = None
-                fan_since = None
-                fan_pose = None
-                if fist_since is None:
-                    fist_since = now
-                if not lights_on and not hold_blink_sent:
-                    send_command(ser, "HOLD_ON", simulate_ok=simulate)
-                    hold_blink_sent = True
-                held = now - fist_since
-                status_msg = f"Fist {held:.1f}s / {HOLD_S}s blink→ON"
-                if held >= HOLD_S and cooled_down and not lights_on:
-                    if send_command(ser, "LIGHTS_ON", simulate_ok=simulate):
+            avg_y = average_wrist_y(hand_list)
+            if avg_y is not None and avg_y < HANDS_UP_Y:
+                stable_down = 0
+                stable_up += 1
+                status_msg = (
+                    "Lights on!"
+                    if stable_up >= STABLE_FRAMES and cooled_down
+                    else f"Hands up ({stable_up}/{STABLE_FRAMES})"
+                )
+                if stable_up >= STABLE_FRAMES and cooled_down and not lights_on:
+                    if send_command(ser, "LIGHTS_ON"):
                         lights_on = True
-                        hold_blink_sent = False
                         last_command_at = now
-                        fist_since = None
-                        status_msg = "Lights ON!"
-            elif pose == "palm":
-                fist_since = None
-                fan_since = None
-                fan_pose = None
-                if palm_since is None:
-                    palm_since = now
-                if lights_on and not hold_blink_sent:
-                    send_command(ser, "HOLD_ON", simulate_ok=simulate)
-                    hold_blink_sent = True
-                held = now - palm_since
-                status_msg = f"Open palm {held:.1f}s / {HOLD_S}s blink→OFF"
-                if held >= HOLD_S and cooled_down and lights_on:
-                    if send_command(ser, "LIGHTS_OFF", simulate_ok=simulate):
+                        stable_up = 0
+            elif avg_y is not None and avg_y > HANDS_DOWN_Y:
+                stable_up = 0
+                stable_down += 1
+                status_msg = (
+                    "Lights off!"
+                    if stable_down >= STABLE_FRAMES and cooled_down
+                    else f"Hands down ({stable_down}/{STABLE_FRAMES})"
+                )
+                if stable_down >= STABLE_FRAMES and cooled_down and lights_on:
+                    if send_command(ser, "LIGHTS_OFF"):
                         lights_on = False
-                        hold_blink_sent = False
                         last_command_at = now
-                        palm_since = None
-                        status_msg = "Lights OFF!"
-            elif pose in ("fan1", "fan2", "fan3", "thumb_stop"):
-                fist_since = None
-                palm_since = None
-                if hold_blink_sent:
-                    send_command(ser, "HOLD_OFF", simulate_ok=simulate)
-                    hold_blink_sent = False
-                if fan_pose != pose:
-                    fan_pose = pose
-                    fan_since = now
-                held = now - (fan_since or now)
-                if pose == "thumb_stop":
-                    status_msg = f"Thumbs up {held:.1f}s / {FAN_HOLD_S}s → fan STOP"
-                    if held >= FAN_HOLD_S and cooled_down and fan_speed != 0:
-                        if send_command(ser, "FAN_STOP", simulate_ok=simulate):
-                            fan_speed = 0
-                            last_command_at = now
-                            fan_since = None
-                            fan_pose = None
-                            status_msg = "Fan STOP!"
-                else:
-                    target = int(pose[-1])
-                    status_msg = f"{target} finger(s) {held:.1f}s / {FAN_HOLD_S}s → speed {target}"
-                    if held >= FAN_HOLD_S and cooled_down and fan_speed != target:
-                        cmd = f"FAN_SPEED_{target}"
-                        if send_command(ser, cmd, simulate_ok=simulate):
-                            fan_speed = target
-                            last_command_at = now
-                            fan_since = None
-                            fan_pose = None
-                            status_msg = f"Fan speed {target}!"
+                        stable_down = 0
             else:
-                if hold_blink_sent:
-                    send_command(ser, "HOLD_OFF", simulate_ok=simulate)
-                    hold_blink_sent = False
-                fist_since = None
-                palm_since = None
-                fan_since = None
-                fan_pose = None
-                status_msg = "2 fists=door | fist/palm=lights | 1/2/3=fan | thumb up=stop"
+                stable_up = 0
+                stable_down = 0
+                status_msg = "Neutral - raise or lower both hands"
 
-        sec_label = f"SEC: {'ARM' if security_armed else 'OFF'}"
-        door_label = f"Door: {'OPEN' if door_open else 'CLOSE'}"
-        hands_label = f"Hands: {len(hand_list)}"
-        fan_label = f"Fan: {'OFF' if fan_speed == 0 else f'SPEED {fan_speed}'}"
         led_label = "LED: ON" if lights_on else "LED: OFF"
         serial_label = "USB: OK" if ser and ser.is_open else "USB: --"
-        draw_status(
-            frame,
-            [
-                status_msg,
-                hands_label,
-                led_label,
-                fan_label,
-                door_label,
-                sec_label,
-                serial_label,
-                "s=sec d=door o/f 1/2/3/0 q",
-            ],
-        )
+        draw_status(frame, [status_msg, led_label, serial_label, "o=on  f=off  q=quit"])
 
         cv2.imshow(window, frame)
         key = cv2.waitKey(1) & 0xFF
         if key == ord("q"):
             break
         if key == ord("o") and cooled_down:
-            if send_command(ser, "LIGHTS_ON", simulate_ok=simulate):
+            if send_command(ser, "LIGHTS_ON"):
                 lights_on = True
                 last_command_at = time.time()
         if key == ord("f") and cooled_down:
-            if send_command(ser, "LIGHTS_OFF", simulate_ok=simulate):
+            if send_command(ser, "LIGHTS_OFF"):
                 lights_on = False
-                last_command_at = time.time()
-        if key == ord("1") and cooled_down:
-            if send_command(ser, "FAN_SPEED_1", simulate_ok=simulate):
-                fan_speed = 1
-                last_command_at = time.time()
-        if key == ord("2") and cooled_down:
-            if send_command(ser, "FAN_SPEED_2", simulate_ok=simulate):
-                fan_speed = 2
-                last_command_at = time.time()
-        if key == ord("3") and cooled_down:
-            if send_command(ser, "FAN_SPEED_3", simulate_ok=simulate):
-                fan_speed = 3
-                last_command_at = time.time()
-        if key == ord("0") and cooled_down:
-            if send_command(ser, "FAN_STOP", simulate_ok=simulate):
-                fan_speed = 0
-                last_command_at = time.time()
-        if key == ord("d") and cooled_down:
-            if send_command(ser, "DOOR_TOGGLE", simulate_ok=simulate):
-                door_open = not door_open
-                last_command_at = time.time()
-        if key == ord("s") and cooled_down:
-            cmd = "SECURITY_OFF" if security_armed else "SECURITY_ON"
-            if send_command(ser, cmd, simulate_ok=simulate):
-                security_armed = not security_armed
                 last_command_at = time.time()
 
     cap.release()

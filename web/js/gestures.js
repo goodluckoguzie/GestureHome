@@ -1,5 +1,5 @@
 /**
- * GestureHome Phase 1, browser script
+ * GestureHome Phase 1 - browser script
  * Watches your hands via webcam and asks the Python bridge to turn the LED on/off.
  */
 
@@ -15,7 +15,7 @@ const LM = {
   INDEX_TIP: 8,   // Point 8 = index fingertip (reserved for later phases)
 };
 
-// Pairs of point indices, used to draw green skeleton lines on hands
+// Pairs of point indices - used to draw green skeleton lines on hands
 const HAND_CONNECTIONS = [
   [0, 1], [1, 2], [2, 3], [3, 4],           // thumb bones
   [0, 5], [5, 6], [6, 7], [7, 8],           // index finger bones
@@ -31,7 +31,7 @@ const STABLE_FRAMES = 4;        // Frames to hold gesture before sending
 const HANDS_UP_Y = 0.42;        // Wrist Y below this = hands "up" (0=top, 1=bottom)
 const HANDS_DOWN_Y = 0.58;      // Wrist Y above this = hands "down"
 
-// URL of Python bridge, use page origin if http, else fallback localhost:8090
+// URL of Python bridge - use page origin if http, else fallback localhost:8090
 const BRIDGE_BASE =
   window.location.protocol.startsWith("http")
     ? window.location.origin
@@ -139,7 +139,7 @@ async function initHandLandmarker() {
       "Timed out loading hand model (GPU)."
     );
   } catch {
-    opts.baseOptions.delegate = "CPU";              // GPU failed, use CPU
+    opts.baseOptions.delegate = "CPU";              // GPU failed - use CPU
     return await withTimeout(
       HandLandmarker.createFromOptions(vision, opts), // Build landmarker with CPU
       LOAD_TIMEOUT_MS,
@@ -250,11 +250,11 @@ function processGestures(landmarksList) {
     if (stableDown >= STABLE_FRAMES && cooledDown && lightsOn) {
       sendCommand("LIGHTS_OFF");                    // Tell bridge to turn off
     }
-  } else {                                          // Middle zone, neutral
+  } else {                                          // Middle zone - neutral
     stableUp = 0;
     stableDown = 0;
     statusDot.className = "brand-dot live";
-    statusText.textContent = "Neutral, raise or lower both hands";
+    statusText.textContent = "Neutral - raise or lower both hands";
   }
 }
 

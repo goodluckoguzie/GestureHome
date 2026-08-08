@@ -2,10 +2,10 @@
 
 | Branch | Approach | Use when |
 |--------|----------|----------|
-| **`main`** | **Python + Arduino** (`home_controller.py`) | Default, easier to learn, one Python script |
+| **`main`** | **Python + Arduino** (`home_controller.py`) | Default - easier to learn, one Python script |
 | **`legacy/web-bridge`** | **Chrome + FastAPI** (`web/` + `bridge/`) | Browser UI like PuzzleCam |
 
-Both branches share the same **Arduino firmware** (`firmware/gesture_home/gesture_home.ino`).
+Both branches share the same **Arduino firmware** (`firmware/gesture_home.ino`).
 
 ```bash
 git checkout main                 # Python + OpenCV window
