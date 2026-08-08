@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GestureHome Booth - Projector</title>
+  <link rel="stylesheet" href="/web/host.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header>
+    <h1>GestureHome Live</h1>
+    <p class="subtitle">
+      Scan the QR code on your phone, use your camera, and control the real smart home model.
+      One person at a time works best (about 30 seconds each).
+    </p>
+    <p id="usbBadge" class="badge warn">Checking USB…</p>
+  </header>
+
+  <div class="layout">
+    <section class="card">
+      <h2>Join on your phone</h2>
+      <div class="qr-wrap">
+        <div id="qrcode"></div>
+        <p class="phone-url" id="phoneUrl">Loading…</p>
+        <p class="hint">Same Wi-Fi as this laptop. Tap Start camera, then use the gesture cheat sheet.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>How it works</h2>
+      <pre class="flow">QR on projector
+  -> phone opens booth page
+  -> laptop booth_bridge
+  -> USB serial
+  -> Keyestudio house</pre>
+    </section>
+
+    <section class="card">
+      <h2>House status (live)</h2>
+      <div class="status-grid" id="statusGrid">
+        <span>USB</span><strong id="stUsb">-</strong>
+        <span>Light</span><strong id="stLight">-</strong>
+        <span>Fan</span><strong id="stFan">-</strong>
+        <span>Door</span><strong id="stDoor">-</strong>
+        <span>Security</span><strong id="stSec">-</strong>
+        <span>Alarm</span><strong id="stAlarm">-</strong>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Gesture cheat sheet</h2>
+      <ul class="cheat-sheet">
+        <li><strong>1 fist</strong> hold 3s → lights ON</li>
+        <li><strong>Open palm</strong> hold 3s → lights OFF</li>
+        <li><strong>1 / 2 / 3 fingers</strong> hold 2s → fan speed 1 / 2 / 3</li>
+        <li><strong>Thumbs up</strong> hold 2s → fan STOP</li>
+        <li><strong>2 closed fists</strong> hold 2s → door toggle</li>
+        <li><strong>Wave</strong> or <strong>2 open palms</strong> hold 2s → security ON/OFF</li>
+      </ul>
+    </section>
+  </div>
+
+  <p class="footer">Driver page: <a id="driverLink" href="/booth.html" style="color: var(--accent)">booth.html</a></p>
+
+  <script src="/web/host.js"></script>
+</body>
+</html>

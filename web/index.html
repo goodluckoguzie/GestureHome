@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<!-- Tells the browser: this is a modern HTML5 page -->
+<html lang="en">
+<!-- Page language is English -->
+<head>
+<!-- Hidden setup section (not visible on screen) -->
+  <meta charset="UTF-8" />
+  <!-- Character encoding: supports most letters and symbols worldwide -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Makes layout work on phones and tablets -->
+  <title>GestureHome Phase 1</title>
+  <!-- Text shown in the browser tab -->
+  <link rel="stylesheet" href="/css/styles.css" />
+  <!-- Loads colours, layout, and sizes from styles.css -->
+</head>
+<body>
+<!-- Everything you see on screen starts here -->
+  <header class="top-bar">
+  <!-- Top strip: logo on left, status message on right -->
+    <div class="brand">
+    <!-- Groups dot + title + phase tag on the left -->
+      <span class="brand-dot" id="statusDot"></span>
+      <!-- Small circle; JS changes colour (grey / green / orange) -->
+      <h1>GestureHome</h1>
+      <!-- App name -->
+      <span class="phase-tag">Phase 1</span>
+      <!-- Label showing we are on Phase 1 -->
+    </div>
+    <p class="status-line" id="statusText">Starting…</p>
+    <!-- Live message: "Show both hands", "Lights on!", errors, etc. -->
+  </header>
+
+  <main class="layout">
+  <!-- Main area: camera (left) + control panel (right) -->
+    <section class="stage-wrap">
+    <!-- Left column: camera and hints -->
+      <div class="stage" id="stage">
+      <!-- Black box where the camera picture is drawn -->
+        <video id="webcam" playsinline muted></video>
+        <!-- Hidden element that holds the real camera stream -->
+        <canvas id="sceneCanvas"></canvas>
+        <!-- Visible picture: mirrored video + green hand skeleton lines -->
+      </div>
+      <div class="hint-bar">
+      <!-- Instructions under the camera -->
+        <span>Both hands <strong>up</strong> → lights on</span>
+        <!-- Static hint: raise hands to turn on -->
+        <span>Both hands <strong>down</strong> → lights off</span>
+        <!-- Static hint: lower hands to turn off -->
+      </div>
+    </section>
+
+    <aside class="panel">
+    <!-- Right side panel: status and manual buttons -->
+      <h2>House status</h2>
+      <!-- Section title for the on-screen LED -->
+      <div class="led-card">
+      <!-- Card showing fake LED bulb + text -->
+        <div class="led-icon" id="ledIcon" aria-hidden="true"></div>
+        <!-- Circle icon; glows yellow when JS adds class "on" -->
+        <div>
+          <p class="led-label">White LED (pin 13)</p>
+          <!-- Label: which physical LED on the Keyestudio board -->
+          <p class="led-state" id="ledState">Unknown</p>
+          <!-- Text "On", "Off", or "Unknown" -->
+        </div>
+      </div>
+
+      <h2>Bridge</h2>
+      <!-- Section title for Python bridge / USB status -->
+      <p class="bridge-line" id="bridgeLine">Checking…</p>
+      <!-- Shows if USB serial is connected to the board -->
+
+      <h2>Manual test</h2>
+      <!-- Section title for click buttons (no gestures) -->
+      <div class="btn-row">
+      <!-- Row holding the two buttons -->
+        <button type="button" id="btnOn">Lights on</button>
+        <!-- Click sends LIGHTS_ON to the bridge -->
+        <button type="button" id="btnOff">Lights off</button>
+        <!-- Click sends LIGHTS_OFF to the bridge -->
+      </div>
+
+      <p class="footnote">
+      <!-- Small help text at bottom of panel -->
+        Upload <code>firmware/gesture_home/gesture_home.ino</code> first. Then
+        <!-- Reminder: Arduino code must be on the board first -->
+        <code>conda activate home</code> and <code>python bridge/bridge.py</code>
+        <!-- How to start the Python bridge -->
+        with the Keyestudio on USB.
+        <!-- Board must be plugged in via USB cable -->
+      </p>
+    </aside>
+  </main>
+
+  <div class="overlay" id="loadingOverlay">
+  <!-- Full-screen cover shown while hand AI is downloading -->
+    <p id="loaderText">Loading hand model…</p>
+    <!-- Loading message text -->
+    <button type="button" class="hidden" id="loaderRetry">Retry</button>
+    <!-- Shown only if loading fails; reloads the page -->
+  </div>
+
+  <div class="error-banner hidden" id="errorBanner"></div>
+  <!-- Red error bar at bottom; hidden until JS shows an error -->
+
+  <script type="module" src="/js/gestures.js"></script>
+  <!-- Loads the JavaScript brain: camera, gestures, bridge calls -->
+</body>
+</html>

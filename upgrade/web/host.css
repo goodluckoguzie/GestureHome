@@ -1,0 +1,147 @@
+:root {
+  --bg: #050510;
+  --accent: #61d4c3;
+  --card: rgba(12, 18, 32, 0.85);
+  --border: rgba(255, 255, 255, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--bg);
+  color: #fff;
+  min-height: 100vh;
+  padding: 32px 40px;
+}
+
+header {
+  margin-bottom: 28px;
+}
+
+h1 {
+  font-size: 2.4rem;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: #9ca3af;
+  font-size: 1.1rem;
+  max-width: 720px;
+  line-height: 1.5;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.card h2 {
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+  color: var(--accent);
+}
+
+.flow {
+  font-family: ui-monospace, monospace;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: #d1d5db;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 16px;
+  border-radius: 10px;
+}
+
+.qr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+#qrcode {
+  background: #fff;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.phone-url {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  word-break: break-all;
+  text-align: center;
+}
+
+.hint {
+  color: #9ca3af;
+  font-size: 0.9rem;
+  text-align: center;
+  max-width: 320px;
+  line-height: 1.4;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 16px;
+  font-size: 1rem;
+}
+
+.status-grid strong {
+  color: var(--accent);
+}
+
+.cheat-sheet {
+  list-style: none;
+  line-height: 1.7;
+  color: #d1d5db;
+}
+
+.cheat-sheet li {
+  margin-bottom: 6px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+
+.badge.ok {
+  background: rgba(61, 214, 195, 0.15);
+  color: var(--accent);
+}
+
+.badge.warn {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+}
+
+.footer {
+  margin-top: 24px;
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,147 @@
+:root {
+  --bg: #050510;
+  --accent: #61d4c3;
+  --glass: rgba(12, 18, 32, 0.75);
+  --border: rgba(255, 255, 255, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--bg);
+  color: #fff;
+  overflow: hidden;
+}
+
+#startOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(8px);
+}
+
+#startOverlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+
+.start-btn {
+  margin-top: 24px;
+  padding: 14px 36px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(120deg, #00ffcc, #3366ff);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.stage {
+  position: fixed;
+  inset: 0;
+}
+
+.input_video {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+  filter: brightness(0.55);
+}
+
+#mainCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(-1);
+  pointer-events: none;
+}
+
+.side-panel {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: min(360px, 38vw);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  backdrop-filter: blur(12px);
+}
+
+.panel h2 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.cheat-sheet {
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.cheat-sheet li {
+  margin-bottom: 6px;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.status-grid span {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.status-grid strong {
+  color: var(--accent);
+}
+
+#gestureLine {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #fff;
+  min-height: 1.4em;
+}
+
+#timerLine {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.brand {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 20;
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+}

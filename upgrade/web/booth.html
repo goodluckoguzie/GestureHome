@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GestureHome Booth: HandConnect + Smart House</title>
+  <link rel="stylesheet" href="/web/booth.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="startOverlay">
+    <h1>GestureHome Booth</h1>
+    <p style="max-width: 420px; text-align: center; color: #aaa; line-height: 1.5;">
+      Neon hand tracking controls the real Keyestudio house.
+      <strong>iPhone:</strong> use the <strong>https://</strong> link from the projector QR
+      (not http). Accept the certificate warning, then tap Start camera.
+    </p>
+    <button class="start-btn" id="startBtn">Start camera</button>
+  </div>
+
+  <div class="brand">GestureHome × HandConnect</div>
+
+  <div class="stage">
+    <video class="input_video" playsinline muted></video>
+    <canvas id="mainCanvas"></canvas>
+  </div>
+
+  <aside class="side-panel">
+    <div class="panel">
+      <h2>Live status</h2>
+      <div class="status-grid" id="houseStatus">
+        <span>USB</span><strong id="stUsb">-</strong>
+        <span>Light</span><strong id="stLight">-</strong>
+        <span>Fan</span><strong id="stFan">-</strong>
+        <span>Door</span><strong id="stDoor">-</strong>
+        <span>Security</span><strong id="stSec">-</strong>
+        <span>Alarm</span><strong id="stAlarm">-</strong>
+      </div>
+      <p id="gestureLine">Show your hands…</p>
+      <p id="timerLine"></p>
+    </div>
+
+    <div class="panel">
+      <h2>Gesture cheat sheet</h2>
+      <ul class="cheat-sheet">
+        <li><strong>1 fist</strong> hold 3s → lights <strong>ON</strong></li>
+        <li><strong>Open palm</strong> hold 3s → lights <strong>OFF</strong></li>
+        <li><strong>1 / 2 / 3 fingers</strong> hold 2s → fan speed 1 / 2 / 3</li>
+        <li><strong>Thumbs up</strong> hold 2s → fan <strong>STOP</strong></li>
+        <li><strong>2 closed fists</strong> hold 2s → door toggle</li>
+        <li><strong>Wave</strong> or <strong>2 open palms</strong> hold 2s → security ON/OFF</li>
+      </ul>
+    </div>
+  </aside>
+
+  <script src="/web/booth.js"></script>
+</body>
+</html>
