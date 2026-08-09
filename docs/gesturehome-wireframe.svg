@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 920" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#333"/>
+    </marker>
+    <style>
+      .title { font-size: 26px; font-weight: bold; fill: #1a4a8a; }
+      .subtitle { font-size: 13px; fill: #444; }
+      .box { fill: #fafafa; stroke: #333; stroke-width: 2; }
+      .box-main { fill: #eef4ff; stroke: #1a4a8a; stroke-width: 2.5; }
+      .box-hw { fill: #e8f5e9; stroke: #2e7d32; stroke-width: 2; }
+      .gesture { fill: #fff8e1; stroke: #f57c00; stroke-width: 1.5; }
+      .label { font-size: 13px; font-weight: bold; fill: #111; }
+      .small { font-size: 11px; fill: #333; }
+      .tiny { font-size: 10px; fill: #555; }
+      .arrow { stroke: #333; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .section { font-size: 12px; font-weight: bold; fill: #c45a11; }
+    </style>
+  </defs>
+
+  <text x="40" y="40" class="title">GestureHome</text>
+  <text x="40" y="62" class="subtitle">Laptop webcam + home_controller.py ’ USB ’ Keyestudio smart home kit</text>
+  <text x="40" y="78" class="tiny">Run: python home_controller.py</text>
+
+  <!-- Gestures panel -->
+  <rect x="30" y="100" width="360" height="420" class="box" rx="8"/>
+  <text x="50" y="128" class="section">HAND GESTURES (MediaPipe)</text>
+
+  <rect x="50" y="145" width="320" height="44" class="gesture" rx="4"/>
+  <text x="60" y="168" class="small">Closed fist 3s ’ LED ON</text>
+  <text x="60" y="184" class="tiny">serial: LIGHTS_ON (+ HOLD_ON blink while waiting)</text>
+
+  <rect x="50" y="205" width="320" height="44" class="gesture" rx="4"/>
+  <text x="60" y="218" class="small">Open palm 3s ’ LED OFF</text>
+  <text x="60" y="234" class="tiny">serial: LIGHTS_OFF</text>
+
+  <rect x="50" y="255" width="320" height="44" class="gesture" rx="4"/>
+  <text x="60" y="268" class="small">1 / 2 / 3 fingers held 2s ’ fan speed 1 / 2 / 3</text>
+  <text x="60" y="284" class="tiny">serial: FAN_SPEED_1, FAN_SPEED_2, FAN_SPEED_3</text>
+
+  <rect x="50" y="305" width="320" height="44" class="gesture" rx="4"/>
+  <text x="60" y="318" class="small">Thumbs up 2s ’ fan STOP</text>
+  <text x="60" y="334" class="tiny">serial: FAN_STOP</text>
+
+  <rect x="50" y="345" width="320" height="44" class="gesture" rx="4"/>
+  <text x="60" y="358" class="small">Two closed fists 2s ’ door OPEN / CLOSE (toggle)</text>
+  <text x="60" y="374" class="tiny">serial: DOOR_TOGGLE ’ servo on house</text>
+
+  <text x="50" y="410" class="tiny">Hand skeleton drawn on OpenCV window</text>
+  <text x="50" y="426" class="tiny">Keys: o/f lights, 1/2/3/0 fan, d door, q quit</text>
+
+  <path d="M 400 300 L 450 300" class="arrow"/>
+
+  <!-- home_controller -->
+  <rect x="460" y="120" width="360" height="360" class="box-main" rx="10"/>
+  <text x="480" y="152" class="label">home_controller.py</text>
+  <text x="480" y="172" class="tiny">On your laptop (main branch)</text>
+  <text x="480" y="200" class="small">Each frame:</text>
+  <text x="480" y="218" class="tiny">1. Webcam frame (OpenCV)</text>
+  <text x="480" y="234" class="tiny">2. MediaPipe Hand Landmarker (up to 2 hands)</text>
+  <text x="480" y="250" class="tiny">3. detect_single_hand_pose / two_hand_pose</text>
+  <text x="480" y="266" class="tiny">4. Hold timer + cooldown ’ pick serial command</text>
+  <text x="480" y="250" class="tiny"></text>
+  <text x="480" y="296" class="small">Detects: fist, palm, finger count, thumbs up, 2 fists</text>
+  <text x="480" y="320" class="tiny">pyserial writes one line per command (9600 baud)</text>
+  <text x="480" y="356" class="small">On-screen status:</text>
+  <text x="480" y="372" class="tiny">LED, Fan speed, Door, USB link</text>
+
+  <path d="M 900 280 L 950 280" class="arrow"/>
+  <text x="905" y="268" class="tiny">USB cable</text>
+
+  <!-- Arduino + house -->
+  <rect x="960" y="80" width="500" height="440" class="box-hw" rx="10"/>
+  <text x="980" y="108" class="section" fill="#2e7d32">KEYESTUDIO HOUSE</text>
+  <text x="980" y="128" class="label">firmware/gesture_home/gesture_home.ino</text>
+  <text x="980" y="152" class="tiny">Arduino reads serial lines in loop()</text>
+
+  <text x="980" y="180" class="small">Actuators on kit:</text>
+  <text x="980" y="200" class="tiny">" White LED (pin 13)  on/off + blink during hold</text>
+  <text x="980" y="216" class="tiny">" Door servo  OPEN angle / CLOSE angle</text>
+  <text x="980" y="232" class="tiny">" Fan  speed 0 (off), 1, 2, 3 (PWM)</text>
+  <text x="980" y="252" class="tiny">" LCD 16x2 (I2C)  shows Light, Door, Fan status</text>
+  <text x="980" y="268" class="tiny">" Buzzer  short tones on light/door/fan changes</text>
+
+  <rect x="980" y="290" width="200" height="70" class="box" rx="4"/>
+  <text x="990" y="312" class="small">LCD example:</text>
+  <text x="990" y="330" class="tiny">Light:ON  Door:CLOSE</text>
+  <text x="990" y="348" class="tiny">Fan:2</text>
+
+  <!-- Simple house sketch -->
+  <rect x="1240" y="200" width="120" height="90" fill="none" stroke="#2e7d32" stroke-width="2"/>
+  <polygon points="1240,200 1300,160 1360,200" fill="none" stroke="#2e7d32" stroke-width="2"/>
+  <text x="1265" y="255" class="tiny">LED</text>
+  <text x="1255" y="275" class="tiny">fan door</text>
+  <text x="1250" y="310" class="tiny">LCD</text>
+
+  <rect x="30" y="540" width="1440" height="120" class="box" rx="8"/>
+  <text x="50" y="568" class="label">Data flow (one line)</text>
+  <text x="50" y="592" class="tiny">Your hands ’ webcam ’ home_controller.py (gesture rules) ’ USB text commands ’</text>
+  <text x="50" y="610" class="tiny">gesture_home.ino ’ LED + door servo + fan speeds + LCD update on physical Keyestudio KS0085 model</text>
+
+  <rect x="30" y="700" width="1440" height="90" class="box" rx="6" stroke-dasharray="6 4"/>
+  <text x="50" y="728" class="small">Serial commands (examples)</text>
+  <text x="50" y="748" class="tiny">LIGHTS_ON | LIGHTS_OFF | FAN_SPEED_1 | FAN_SPEED_2 | FAN_SPEED_3 | FAN_STOP | DOOR_TOGGLE</text>
+  <text x="50" y="768" class="tiny">HOLD_ON / HOLD_OFF (LED blink while holding gesture for lights)</text>
+</svg>

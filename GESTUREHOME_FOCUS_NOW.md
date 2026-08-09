@@ -1,33 +1,44 @@
 # GestureHome - what we are focusing on right now
 
 **Product:** Gesture-controlled **Keyestudio Smart Home** kit (home security / IoT demo)  
-**Kit:** Keyestudio PLUS + sensor shield (assumed **KS0085**)
-
-**Rule:** Phase 1 = **one gesture → one actuator** (white LED on pin 13). Full PIR alarm / away mode is Phase 2+.
+**Kit:** Keyestudio PLUS + sensor shield (KS0085)  
+**Main command:** `python home_controller.py` (laptop webcam on branch `main`)
 
 ---
 
-## Pipeline wireframes (`main` branch) - for students
+## GestureHome wireframes (for students)
 
-Visual maps: hands → `home_controller.py` → USB → Arduino → LED.
+Visual maps of the **main** laptop path: gestures → `home_controller.py` → USB → Arduino → **LED, door, fan, LCD**.
 
 | Style | File | Best for |
 |-------|------|----------|
-| Default | `docs/main-pipeline-wireframe.png` / `.svg` | Detailed script names |
-| Alt 1 - Vertical timeline | `docs/gesturehome-alt1-vertical.png` | Step-by-step lesson |
-| Alt 2 - Circular | `docs/gesturehome-alt2-circular.png` | Big picture around the house |
-| Alt 3 - Swimlane | `docs/gesturehome-alt3-swimlane.png` | Engineering / CS students |
-| Alt 4 - Classroom poster | `docs/gesturehome-alt4-classroom.png` | Beginners, non-coders |
-| Alt 5 - Dark tech | `docs/gesturehome-alt5-dark-tech.png` | Coding / IoT club |
+| Default | `docs/gesturehome-wireframe.png` / `.svg` | Full gesture + hardware map |
+| Vertical timeline | `docs/gesturehome-vertical.png` | Step-by-step lesson |
+| Circular | `docs/gesturehome-circular.png` | Big picture around the house |
+| Swimlane | `docs/gesturehome-swimlane.png` | Engineering / CS students |
+| Classroom poster | `docs/gesturehome-classroom.png` | Beginners |
+| Dark tech | `docs/gesturehome-dark-tech.png` | Coding / IoT club |
+
+### Gestures on `main` (`home_controller.py`)
+
+| Gesture | Hold time | Serial command | Hardware |
+|---------|-----------|----------------|----------|
+| Closed **fist** | 3s | `LIGHTS_ON` | White LED on |
+| Open **palm** | 3s | `LIGHTS_OFF` | White LED off |
+| **1 / 2 / 3** fingers | 2s | `FAN_SPEED_1` / `_2` / `_3` | Fan speed 1, 2, 3 |
+| **Thumbs up** | 2s | `FAN_STOP` | Fan off |
+| **Two fists** | 2s | `DOOR_TOGGLE` | Door servo open ↔ close |
+
+Firmware `firmware/gesture_home/gesture_home.ino` updates the **LCD** (Light, Door, Fan) and plays **buzzer** cues.
 
 ```text
-  Both hands UP/DOWN (webcam)
+  Hand gestures (webcam)
            |
            v
-  home_controller.py  (MediaPipe + gesture rules)
+  home_controller.py  (MediaPipe + pose timers)
            |
-           v USB serial LIGHTS_ON / LIGHTS_OFF
-  gesture_home.ino  (pin 13 LED on Keyestudio house)
+           v USB serial 9600
+  gesture_home.ino  →  LED + door servo + fan + LCD
 ```
 
 ---
@@ -43,7 +54,7 @@ GestureHome has **two primary branches** - same Arduino house, different **who h
 
 ```text
 main:
-  Laptop webcam  →  home_controller.py  →  USB serial  →  gesture_home.ino  →  LED
+  Laptop webcam  →  home_controller.py  →  USB serial  →  gesture_home.ino  →  LED + door + fan + LCD
 
 upgrade/booth (phone):
   QR on projector  →  phone opens booth page  →  booth_bridge  →  USB  →  house
