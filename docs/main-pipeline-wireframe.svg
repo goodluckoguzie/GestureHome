@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 880" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#333"/>
+    </marker>
+    <style>
+      .title { font-size: 22px; font-weight: bold; fill: #111; }
+      .subtitle { font-size: 13px; fill: #444; }
+      .box { fill: #fafafa; stroke: #333; stroke-width: 2; }
+      .box-main { fill: #fff4e6; stroke: #c45a11; stroke-width: 2.5; }
+      .box-hw { fill: #e8f5e9; stroke: #2e7d32; stroke-width: 2; }
+      .label { font-size: 14px; font-weight: bold; fill: #111; }
+      .small { font-size: 11px; fill: #333; }
+      .tiny { font-size: 10px; fill: #555; }
+      .arrow { stroke: #333; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .joint { fill: #fff; stroke: #c45a11; stroke-width: 2; }
+      .bone { stroke: #888; stroke-width: 2; fill: none; }
+      .section { font-size: 12px; font-weight: bold; fill: #c45a11; }
+      .led-on { fill: #ffeb3b; stroke: #f57f17; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <text x="40" y="36" class="title">GestureHome main branch (wireframe)</text>
+  <text x="40" y="56" class="subtitle">python home_controller.py - laptop controls smart home LED</text>
+
+  <!-- Person + hands -->
+  <rect x="30" y="80" width="300" height="360" class="box" rx="8"/>
+  <text x="50" y="108" class="section">1. YOU + WEBCAM</text>
+  <text x="50" y="128" class="tiny">Laptop camera sees both hands</text>
+
+  <g transform="translate(120, 200)">
+    <circle cx="60" cy="0" r="16" class="bone"/>
+    <line x1="60" y1="16" x2="60" y2="80" class="bone"/>
+    <line x1="20" y1="40" x2="100" y2="40" class="bone"/>
+    <line x1="20" y1="40" x2="10" y2="90" class="bone"/>
+    <line x1="100" y1="40" x2="110" y2="90" class="bone"/>
+    <circle cx="10" cy="90" r="6" class="joint"/>
+    <circle cx="110" cy="90" r="6" class="joint"/>
+    <text x="-5" y="110" class="tiny">L wrist</text>
+    <text x="95" y="110" class="tiny">R wrist</text>
+    <text x="35" y="-25" class="small">Both hands UP</text>
+    <text x="25" y="130" class="tiny" fill="#c45a11">avg wrist Y &lt; 0.42</text>
+  </g>
+  <g transform="translate(120, 320)">
+    <line x1="20" y1="0" x2="100" y2="0" class="bone"/>
+    <circle cx="10" cy="50" r="6" class="joint"/>
+    <circle cx="110" cy="50" r="6" class="joint"/>
+    <text x="25" y="-10" class="small">Both hands DOWN</text>
+    <text x="15" y="70" class="tiny" fill="#c45a11">avg wrist Y &gt; 0.58</text>
+  </g>
+  <text x="50" y="400" class="small">MediaPipe Hand Landmarker (2 hands)</text>
+  <text x="50" y="418" class="tiny">21 keypoints per hand, skeleton overlay</text>
+
+  <path d="M 330 260 L 380 260" class="arrow"/>
+
+  <!-- home_controller -->
+  <rect x="390" y="100" width="340" height="400" class="box-main" rx="10"/>
+  <text x="410" y="132" class="label">home_controller.py</text>
+  <text x="410" y="152" class="tiny">One Python process on laptop</text>
+
+  <text x="410" y="180" class="small">Each frame loop:</text>
+  <text x="410" y="200" class="tiny">1. Read webcam frame (OpenCV)</text>
+  <text x="410" y="218" class="tiny">2. Mirror flip (selfie view)</text>
+  <text x="410" y="234" class="tiny">3. detect_for_video() - hand landmarks</text>
+  <text x="410" y="250" class="tiny">4. draw_hand_skeleton() on frame</text>
+  <text x="410" y="274" class="small">Gesture rules:</text>
+  <text x="410" y="294" class="tiny">- Need 2 hands visible</text>
+  <text x="410" y="310" class="tiny">- Stable 4 frames + 1.5s cooldown</text>
+  <text x="410" y="326" class="tiny">- UP: send LIGHTS_ON</text>
+  <text x="410" y="342" class="tiny">- DOWN: send LIGHTS_OFF</text>
+  <text x="410" y="374" class="small">Keys: o=on, f=off, q=quit</text>
+  <text x="410" y="398" class="tiny">OpenCV window shows status text</text>
+  <text x="410" y="424" class="tiny">pyserial writes USB line + newline</text>
+  <text x="410" y="452" class="small">--no-serial = camera only (no Arduino)</text>
+
+  <path d="M 730 280 L 780 280" class="arrow"/>
+  <text x="735" y="268" class="tiny">USB serial 9600</text>
+
+  <!-- Arduino -->
+  <rect x="790" y="80" width="380" height="280" class="box-hw" rx="10"/>
+  <text x="810" y="108" class="section" fill="#2e7d32">2. KEYESTUDIO ARDUINO</text>
+  <text x="810" y="128" class="label">firmware/gesture_home.ino</text>
+  <text x="810" y="152" class="tiny">Runs ON the board (C++ / Arduino)</text>
+  <text x="810" y="176" class="small">loop(): read Serial until newline</text>
+  <text x="810" y="200" class="tiny">LIGHTS_ON  -> digitalWrite pin 13 HIGH</text>
+  <text x="810" y="216" class="tiny">LIGHTS_OFF -> digitalWrite pin 13 LOW</text>
+  <text x="810" y="248" class="small">Hardware:</text>
+  <text x="810" y="268" class="tiny">Keyestudio PLUS + sensor shield (KS0085)</text>
+  <text x="810" y="284" class="tiny">Pin 13 = white LED (Phase 1)</text>
+
+  <!-- LED icon -->
+  <circle cx="1050" cy="200" r="28" class="led-on"/>
+  <text x="1025" y="245" class="tiny">LED ON</text>
+
+  <!-- Physical house -->
+  <rect x="790" y="420" width="380" height="160" class="box" rx="8"/>
+  <text x="810" y="448" class="section">3. PHYSICAL SMART HOME MODEL</text>
+  <text x="810" y="472" class="tiny">Wooden kit on table - LED = first actuator</text>
+  <text x="810" y="496" class="tiny">Phase 2+ (not main focus): fan, door, PIR alarm, gas sensor</text>
+
+  <!-- Branch note -->
+  <rect x="30" y="520" width="1340" height="100" class="box" rx="8"/>
+  <text x="50" y="548" class="label">main branch vs other branches</text>
+  <text x="50" y="572" class="tiny">main (this diagram): laptop webcam + home_controller.py</text>
+  <text x="50" y="590" class="tiny">upgrade/booth: phone camera + projector QR + booth_bridge.py</text>
+  <text x="50" y="608" class="tiny">legacy/web-bridge: laptop Chrome + bridge/bridge.py port 8090</text>
+
+  <rect x="30" y="640" width="1340" height="70" class="box" rx="6" stroke-dasharray="6 4"/>
+  <text x="50" y="668" class="small">Run: conda activate home && python home_controller.py</text>
+  <text x="50" y="688" class="tiny">Flow: Hands -> MediaPipe -> gesture rules -> USB -> Arduino -> LED</text>
+</svg>
