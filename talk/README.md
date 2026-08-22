@@ -1,4 +1,4 @@
-# GestureHome — IoT presentation (Reveal.js)
+# GestureHome IoT presentation (Reveal.js)
 
 QAHE-branded slides for the 5-minute GestureHome / home-security IoT talk.
 
