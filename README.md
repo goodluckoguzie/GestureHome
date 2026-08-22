@@ -24,8 +24,6 @@ No phone app and no touch on shared switches for the demo path on `main`.
 
 ## Presentation
 
-5-minute QA Higher Education IoT talk. Same Reveal.js style as the [PhD Viva deck](https://goodluckoguzie.github.io/Viva/).
-
 **Slides:** https://goodluckoguzie.github.io/GestureHome/
 
 Open fullscreen in Chrome. Keys: → next, ↓ extra detail on Architecture / Stack, **S** speaker notes.

@@ -1,10 +1,8 @@
 # GestureHome IoT presentation (Reveal.js)
 
-QAHE-branded slides for the 5-minute GestureHome / home-security IoT talk.
+QAHE-branded slides for the GestureHome IoT talk.
 
 **Live:** https://goodluckoguzie.github.io/GestureHome/
-
-Same Reveal.js style as the [PhD Viva deck](https://goodluckoguzie.github.io/Viva/).
 
 ## Open locally
 
