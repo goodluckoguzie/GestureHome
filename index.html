@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GestureHome: QAHE IoT · 5 minutes</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css" />
+  <link rel="stylesheet" href="css/qahe.css" />
+</head>
+<body>
+  <div class="footer-bar">
+    <img class="qa-mark" src="assets/qa-mark.svg" alt="QA" />
+    <span>QA Higher Education · GestureHome</span>
+  </div>
+
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 1 Title: QAHE wave layout -->
+      <section class="title-slide" data-background-color="#004050">
+        <div class="title-frame">
+          <img class="title-wave-bg" src="assets/title-wave.svg" alt="" />
+          <div class="title-brand">
+            <img src="assets/qa-mark-white.svg" alt="QA" />
+            <span>Powering potential</span>
+            <p class="title-org">QA Higher Education</p>
+          </div>
+          <div class="title-copy">
+            <h1>Gesture<br />Home</h1>
+            <p class="title-sub">Hands-free smart home and security</p>
+            <p class="title-by">Abena Asiedua Buabeng</p>
+            <p class="title-supervisor">Supervised by Dr Goodluck Oguzie</p>
+          </div>
+          <div class="title-hero">
+            <img src="media/hero-house.png" alt="Keyestudio smart home kit" />
+          </div>
+        </div>
+        <aside class="notes">
+          Open: I built a small house you control with your hands, not an app.
+          This is an IoT demo: sense, think, connect, act.
+        </aside>
+      </section>
+
+      <!-- 2 Outline: path bar -->
+      <section class="path-slide" data-background-color="#004050">
+        <div class="path-frame">
+          <h2>Presentation Outline</h2>
+          <div class="path-bar">
+            <div class="path-track" aria-hidden="true">
+              <div class="path-fill"></div>
+            </div>
+            <ol class="path-nodes">
+              <li style="--i: 0">
+                <span class="path-label">What IoT is</span>
+                <span class="path-dot">01</span>
+              </li>
+              <li style="--i: 1">
+                <span class="path-label">The problem</span>
+                <span class="path-dot">02</span>
+              </li>
+              <li style="--i: 2">
+                <span class="path-label">The idea</span>
+                <span class="path-dot">03</span>
+              </li>
+              <li style="--i: 3">
+                <span class="path-label">Live demo</span>
+                <span class="path-dot">04</span>
+              </li>
+              <li style="--i: 4">
+                <span class="path-label">Why it matters</span>
+                <span class="path-dot">05</span>
+              </li>
+            </ol>
+          </div>
+          <div class="path-torch" aria-hidden="true"></div>
+        </div>
+        <aside class="notes">Do not linger. Point along the line, then move.</aside>
+      </section>
+
+      <!-- 3 What is IoT -->
+      <section class="iot-slide" data-background-color="#004050" data-beat="1">
+        <div class="iot-frame">
+          <h2>What is IoT?</h2>
+          <p class="iot-def">
+            <strong>Internet of Things (IoT)</strong> is a network of physical objects
+            (things) fitted with sensors, software, and connectivity so they can
+            collect data, communicate, and act, often with little or no human input.
+          </p>
+          <video
+            class="iot-flow"
+            src="media/iot-flow.mp4?v=4"
+            muted
+            loop
+            playsinline
+            autoplay
+            preload="auto"
+          ></video>
+        </div>
+        <aside class="notes">
+          AWS: IoT is the network of connected devices plus the tech that lets them
+          talk to each other and to the cloud. Coursera: devices exchange data without
+          a person in the loop; Kevin Ashton, 1999. IoT Portal: sensors or actuators
+          on a network; closed loop sense, decide, act. USB is still connectivity.
+        </aside>
+      </section>
+
+      <!-- 4 Problem -->
+      <section class="problem-slide" data-background-color="#004050" data-beat="2">
+        <div class="problem-frame">
+          <h2>The problem</h2>
+          <p class="problem-bridge">
+            Smart homes still ask us to touch shared surfaces, switches, phones, and keypads.
+          </p>
+          <div class="problem-hero">
+            <img
+              src="media/problem/problem-hero-touch-hygiene.png"
+              alt="Hands washing under a faucet next to gym equipment and a keypad"
+            />
+            <div class="problem-torch" aria-hidden="true"></div>
+          </div>
+        </div>
+        <aside class="notes">
+          IoT can act, but control still means touch. Shared gym grips and keypads.
+          COVID: wash hands with soap. Also busy hands and PIN pads. Do not preview gestures yet.
+        </aside>
+      </section>
+
+      <!-- 5 Idea -->
+      <section class="idea-slide" data-background-color="#004050" data-beat="3">
+        <div class="idea-frame">
+          <h2>The idea: GestureHome</h2>
+          <!-- tagline removed to keep slide minimal -->
+          <p class="idea-lead">
+            One touch-free gesture language controls the whole home.
+          </p>
+          <div class="idea-hero">
+            <video
+              class="idea-house"
+              src="media/gesturehome-house.mp4?v=3"
+              poster="media/gesturehome-house-poster.png"
+              muted
+              loop
+              playsinline
+              autoplay
+              preload="auto"
+            ></video>
+          </div>
+        </div>
+        <aside class="notes">
+          Touch-free answer to the problem slide. Keep this conceptual: one language, many devices.
+          Do not explain every gesture here. The map comes next.
+        </aside>
+      </section>
+
+      <!-- 6 Architecture (+ vertical Stack) -->
+      <section>
+        <section class="arch-slide" data-background-color="#004050" data-beat="3">
+          <div class="arch-frame">
+            <h2>Architecture</h2>
+            <img
+              class="stack-flow"
+              src="media/arch/stack-flow.png?v=1"
+              alt="Laptop with MediaPipe connects over USB 9600 to the Arduino kit, which drives light, door, fan, and security"
+            />
+          </div>
+          <aside class="notes">
+            Laptop decides, USB 9600 carries the command, Arduino kit drives light, door, fan, security.
+          </aside>
+        </section>
+        <section class="arch-slide" data-background-color="#004050" data-beat="3">
+          <div class="arch-frame">
+            <h2>Stack</h2>
+            <div class="arch-hero">
+              <div class="arch-diagram" aria-hidden="true">
+                <p class="arch-diagram-title">GestureHome</p>
+                <div class="arch-flow">
+                  <div class="arch-step">
+                    <svg viewBox="0 0 64 64" aria-hidden="true">
+                      <path d="M22 36V22a4 4 0 0 1 8 0v8M30 24v6a4 4 0 0 1 8 0v4" fill="none" stroke="#00edb5" stroke-width="3" stroke-linecap="round"/>
+                      <path d="M18 40h28v6H18z" fill="none" stroke="#00edb5" stroke-width="3"/>
+                    </svg>
+                    <span>Hands</span>
+                  </div>
+                  <div class="arch-link"><em>video</em><i></i></div>
+                  <div class="arch-step">
+                    <svg viewBox="0 0 64 64" aria-hidden="true">
+                      <rect x="10" y="18" width="36" height="28" rx="4" fill="none" stroke="#00edb5" stroke-width="3"/>
+                      <circle cx="28" cy="32" r="8" fill="none" stroke="#00edb5" stroke-width="3"/>
+                      <circle cx="28" cy="32" r="3" fill="#00edb5"/>
+                      <path d="M46 28l8-4v16l-8-4z" fill="none" stroke="#00edb5" stroke-width="3"/>
+                    </svg>
+                    <span>Webcam</span>
+                  </div>
+                  <div class="arch-link"><em>MediaPipe</em><i></i></div>
+                  <div class="arch-step">
+                    <svg viewBox="0 0 64 64" aria-hidden="true">
+                      <rect x="12" y="14" width="40" height="36" rx="4" fill="none" stroke="#00edb5" stroke-width="3"/>
+                      <path d="M20 26h24M20 34h16M20 42h20" fill="none" stroke="#00edb5" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                    <span>home_controller.py</span>
+                  </div>
+                  <div class="arch-link"><em>USB 9600</em><i></i></div>
+                  <div class="arch-step">
+                    <svg viewBox="0 0 64 64" aria-hidden="true">
+                      <rect x="14" y="16" width="36" height="32" rx="3" fill="none" stroke="#00edb5" stroke-width="3"/>
+                      <circle cx="24" cy="28" r="3" fill="#00edb5"/>
+                      <circle cx="32" cy="28" r="3" fill="#00edb5"/>
+                      <circle cx="40" cy="28" r="3" fill="#00edb5"/>
+                      <path d="M22 40h20" fill="none" stroke="#00edb5" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                    <span>Arduino kit</span>
+                  </div>
+                  <div class="arch-link"><em>actuators</em><i></i></div>
+                  <div class="arch-step arch-step-out">
+                    <svg viewBox="0 0 64 64" aria-hidden="true">
+                      <path d="M32 10c-6 0-12 5-12 12 0 4 2 7 5 9v8h14v-8c3-2 5-5 5-9 0-7-6-12-12-12z" fill="none" stroke="#00edb5" stroke-width="3"/>
+                      <path d="M27 44h10M28 50h8" fill="none" stroke="#00edb5" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                    <span>LED · door · fan · PIR</span>
+                  </div>
+                </div>
+                <p class="arch-diagram-note">LIGHTS_ON · DOOR_TOGGLE · FAN_SPEED_* · FAN_STOP · SECURITY_ON</p>
+              </div>
+              <img
+                class="arch-photo"
+                src="media/arch/arch-desk-keypoints.png?v=1"
+                alt="Person at a desk, hand keypoints on the laptop, light on"
+              />
+              <div class="arch-torch" aria-hidden="true"></div>
+            </div>
+          </div>
+          <aside class="notes">
+            Move the mouse on the photo. The torch reveals the software path:
+            Hands → webcam → MediaPipe → home_controller.py → USB 9600 → Arduino kit.
+          </aside>
+        </section>
+      </section>
+
+      <!-- 7 Live Demo (+ vertical keyboard backup) -->
+      <section>
+        <section data-background-color="#004050" data-beat="4">
+          <h2>Live Demo</h2>
+          <table class="gtable">
+            <thead>
+              <tr><th>Hand</th><th>Hold</th><th>House</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Fist</td><td>3s</td><td>Lights ON</td></tr>
+              <tr><td>Open palm</td><td>3s</td><td>Lights OFF</td></tr>
+              <tr><td>1 / 2 / 3 fingers</td><td>2s</td><td>Fan speed</td></tr>
+              <tr><td>Thumbs up</td><td>2s</td><td>Fan STOP</td></tr>
+              <tr><td>Two fists</td><td>2s</td><td>Door toggle</td></tr>
+              <tr><td>Wave / two palms</td><td>2s</td><td>Security ON/OFF</td></tr>
+            </tbody>
+          </table>
+          <aside class="notes">
+            60 seconds live. Fist light, palm off, two fists door, wave security if PIR works.
+            Do not debug on stage. If kit fails, the IoT story still stands. Keys ↓ if needed.
+            Say the command before you do it. Do not read the table.
+          </aside>
+        </section>
+        <section data-background-color="#004050" data-beat="4">
+          <h2>Keyboard (backup)</h2>
+          <p><code>o</code> on · <code>f</code> off · <code>1 2 3</code> fan · <code>0</code> stop ·
+            <code>d</code> door · <code>s</code> security · <code>w</code> fullscreen · <code>q</code> quit</p>
+        </section>
+      </section>
+
+      <!-- 8 Why + next -->
+      <section class="why-slide" data-background-color="#004050" data-beat="5">
+        <div class="why-frame">
+          <h2>Why it matters</h2>
+          <p class="why-lead">
+            Touch-free control for busy hands, shared spaces, and anyone who should not need a PIN pad.
+          </p>
+          <p class="why-quote">
+            IoT is not only the cloud.<br />
+            It starts with a sensor and an action.
+          </p>
+          <p class="why-next">
+            <span>Next</span>
+            Same pipeline on Wi-Fi, then phones in the room.
+          </p>
+        </div>
+        <aside class="notes">
+          Land the quote. Optional stretch only if asked: EEG or implants as future input,
+          same sense-decide-act chain. Do not sell chips on stage.
+        </aside>
+      </section>
+
+      <!-- 9 Thank you -->
+      <section data-background-color="#000000">
+        <img class="qa-logo" src="assets/qahe-logo.png" alt="QA" />
+        <h1>Thank you</h1>
+        <p class="subtitle">Questions?</p>
+        <p class="meta">GestureHome · QA Higher Education · IoT</p>
+        <aside class="notes">Stop talking. Wait for questions.</aside>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+  <script>
+    const deck = Reveal;
+    function mountBeatBars() {
+      document.querySelectorAll("section[data-beat]").forEach((sec) => {
+        if (sec.querySelector(".beat-bar")) return;
+        const n = Number(sec.dataset.beat);
+        const bar = document.createElement("div");
+        bar.className = "beat-bar";
+        bar.dataset.beat = String(n);
+        bar.setAttribute("aria-hidden", "true");
+        bar.innerHTML =
+          '<div class="beat-track"><div class="beat-fill"></div></div>' +
+          '<div class="beat-nodes">' +
+          [1, 2, 3, 4, 5]
+            .map((i) => {
+              const cls =
+                i < n ? "is-done" : i === n ? "is-done is-now" : "";
+              return '<span class="' + cls + '">0' + i + "</span>";
+            })
+            .join("") +
+          "</div>";
+        const h2 = sec.querySelector("h2");
+        if (h2) h2.insertAdjacentElement("afterend", bar);
+        else sec.prepend(bar);
+      });
+    }
+    let torchGen = 0;
+    let flickerOn = false;
+    function torchEls() {
+      const slide = document.querySelector(".path-slide");
+      return {
+        slide,
+        frame: slide && slide.querySelector(".path-frame"),
+        torch: slide && slide.querySelector(".path-torch")
+      };
+    }
+    function setTorch(x, y) {
+      const { torch } = torchEls();
+      if (!torch) return;
+      torch.style.setProperty("--tx", x + "px");
+      torch.style.setProperty("--ty", y + "px");
+    }
+    function framePoint(el, frame) {
+      const fr = frame.getBoundingClientRect();
+      const r = el.getBoundingClientRect();
+      return {
+        x: ((r.left + r.width / 2) - fr.left) * (1280 / fr.width),
+        y: ((r.top + r.height / 2) - fr.top) * (720 / fr.height)
+      };
+    }
+    function wait(ms, gen) {
+      return new Promise((resolve) => {
+        setTimeout(() => resolve(gen === torchGen), ms);
+      });
+    }
+    function moveTorch(from, to, ms, gen) {
+      return new Promise((resolve) => {
+        const t0 = performance.now();
+        function tick(now) {
+          if (gen !== torchGen) return resolve(false);
+          const t = Math.min(1, (now - t0) / ms);
+          const e = 1 - Math.pow(1 - t, 3);
+          setTorch(from.x + (to.x - from.x) * e, from.y + (to.y - from.y) * e);
+          if (t < 1) requestAnimationFrame(tick);
+          else resolve(true);
+        }
+        requestAnimationFrame(tick);
+      });
+    }
+    function flickerLoop() {
+      const { slide, torch } = torchEls();
+      if (!flickerOn || !slide || !slide.classList.contains("present") || slide.classList.contains("path-open")) {
+        flickerOn = false;
+        return;
+      }
+      const wobble = Math.sin(Date.now() * 0.012) * 8 + Math.sin(Date.now() * 0.041) * 5;
+      torch.style.setProperty("--r", 168 + wobble + "px");
+      requestAnimationFrame(flickerLoop);
+    }
+    async function runTorchTour() {
+      const { slide, frame } = torchEls();
+      if (!slide || !frame || !slide.classList.contains("present")) return;
+      const gen = ++torchGen;
+      slide.classList.remove("path-open");
+      const dots = [...slide.querySelectorAll(".path-dot")];
+      if (!dots.length) return;
+      flickerOn = true;
+      flickerLoop();
+      const pts = dots.map((d) => framePoint(d, frame));
+      setTorch(pts[0].x, pts[0].y);
+      for (let i = 0; i < pts.length; i++) {
+        if (i > 0 && !(await moveTorch(pts[i - 1], pts[i], 1100, gen))) return;
+        if (!(await wait(i === 0 ? 900 : 1000, gen))) return;
+      }
+      if (!(await wait(700, gen))) return;
+      slide.classList.add("path-open");
+      flickerOn = false;
+    }
+    function replayPath() {
+      const slide = document.querySelector(".path-slide");
+      if (!slide || !slide.classList.contains("present")) {
+        torchGen += 1;
+        flickerOn = false;
+        return;
+      }
+      slide.classList.remove("path-run");
+      void slide.offsetWidth;
+      slide.classList.add("path-run");
+      runTorchTour();
+    }
+    function onPathMouse(e) {
+      const { slide, frame } = torchEls();
+      if (!slide || !frame || !slide.classList.contains("present")) return;
+      if (slide.classList.contains("path-open")) return;
+      torchGen += 1;
+      const fr = frame.getBoundingClientRect();
+      setTorch(
+        (e.clientX - fr.left) * (1280 / fr.width),
+        (e.clientY - fr.top) * (720 / fr.height)
+      );
+    }
+    function restartIotVideo() {
+      const video = document.querySelector(".iot-flow");
+      const on = document.querySelector(".iot-slide.present");
+      if (!video) return;
+      if (on) {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    }
+
+    let problemTorchRaf = 0;
+    function problemTorchEls() {
+      const slide = document.querySelector(".problem-slide");
+      return {
+        slide,
+        hero: slide && slide.querySelector(".problem-hero"),
+        torch: slide && slide.querySelector(".problem-torch"),
+      };
+    }
+
+    function setProblemTorch(x, y) {
+      const { torch } = problemTorchEls();
+      if (!torch) return;
+      // Values are interpreted in px by CSS.
+      torch.style.setProperty("--tx", x + "px");
+      torch.style.setProperty("--ty", y + "px");
+    }
+
+    function flickerProblemTorch() {
+      const { slide, torch } = problemTorchEls();
+      if (!slide || !torch || !slide.classList.contains("present")) return;
+      const wobble = Math.sin(Date.now() * 0.012) * 10 + Math.sin(Date.now() * 0.041) * 6;
+      torch.style.setProperty("--r", 170 + wobble + "px");
+      problemTorchRaf = requestAnimationFrame(flickerProblemTorch);
+    }
+
+    function onProblemHeroMouse(e) {
+      const { slide, hero } = problemTorchEls();
+      if (!slide || !hero || !slide.classList.contains("present")) return;
+      const rect = hero.getBoundingClientRect();
+      const x = (e.clientX - rect.left);
+      const y = (e.clientY - rect.top);
+      setProblemTorch(x, y);
+    }
+
+    function restartProblemTorch() {
+      const { slide, hero, torch } = problemTorchEls();
+      if (!slide || !hero || !torch) return;
+      if (!slide.classList.contains("present")) return;
+
+      // Start torch in the center.
+      const rect = hero.getBoundingClientRect();
+      setProblemTorch(rect.width / 2, rect.height / 2);
+      torch.style.setProperty("--r", "170px");
+
+      cancelAnimationFrame(problemTorchRaf);
+      problemTorchRaf = requestAnimationFrame(flickerProblemTorch);
+    }
+
+    function restartIdeaVideo() {
+      const video = document.querySelector(".idea-house");
+      const on = document.querySelector(".idea-slide.present");
+      if (!video) return;
+      if (on) {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    }
+
+    let archTorchRaf = 0;
+    function archTorchEls() {
+      const hero = document.querySelector(".arch-hero");
+      const slide = hero && hero.closest("section");
+      return {
+        slide,
+        hero,
+        photo: hero && hero.querySelector(".arch-photo"),
+        torch: hero && hero.querySelector(".arch-torch"),
+      };
+    }
+
+    function setArchTorch(x, y) {
+      const { photo, torch } = archTorchEls();
+      if (photo) {
+        photo.style.setProperty("--tx", x + "px");
+        photo.style.setProperty("--ty", y + "px");
+      }
+      if (torch) {
+        torch.style.setProperty("--tx", x + "px");
+        torch.style.setProperty("--ty", y + "px");
+      }
+    }
+
+    function flickerArchTorch() {
+      const { slide, photo, torch } = archTorchEls();
+      if (!slide || !photo || !torch || !slide.classList.contains("present")) return;
+      const wobble = Math.sin(Date.now() * 0.012) * 14 + Math.sin(Date.now() * 0.041) * 8;
+      const r = 300 + wobble + "px";
+      photo.style.setProperty("--r", r);
+      torch.style.setProperty("--r", r);
+      archTorchRaf = requestAnimationFrame(flickerArchTorch);
+    }
+
+    function onArchHeroMouse(e) {
+      const { slide, hero } = archTorchEls();
+      if (!slide || !hero || !slide.classList.contains("present")) return;
+      const rect = hero.getBoundingClientRect();
+      setArchTorch(e.clientX - rect.left, e.clientY - rect.top);
+    }
+
+    function restartArchTorch() {
+      const { slide, hero, photo, torch } = archTorchEls();
+      if (!slide || !hero || !photo || !torch) return;
+      if (!slide.classList.contains("present")) {
+        cancelAnimationFrame(archTorchRaf);
+        photo.style.setProperty("--r", "0px");
+        return;
+      }
+      const rect = hero.getBoundingClientRect();
+      setArchTorch(rect.width / 2, rect.height / 2);
+      photo.style.setProperty("--r", "300px");
+      torch.style.setProperty("--r", "300px");
+      cancelAnimationFrame(archTorchRaf);
+      archTorchRaf = requestAnimationFrame(flickerArchTorch);
+    }
+
+    function syncChrome() {
+      const i = deck.getIndices().h;
+      document.body.classList.toggle("on-title", i === 0);
+      replayPath();
+      restartIotVideo();
+      restartIdeaVideo();
+      restartProblemTorch();
+      restartArchTorch();
+    }
+    deck.initialize({
+      hash: true,
+      slideNumber: "c/t",
+      progress: true,
+      controls: true,
+      center: false,
+      transition: "slide",
+      backgroundTransition: "fade",
+      width: 1280,
+      height: 720,
+      plugins: [RevealNotes]
+    }).then(() => {
+      mountBeatBars();
+      const slide = document.querySelector(".path-slide");
+      if (slide) slide.addEventListener("mousemove", onPathMouse);
+      const problemHero = document.querySelector(".problem-slide .problem-hero");
+      if (problemHero) problemHero.addEventListener("mousemove", onProblemHeroMouse);
+      const archHero = document.querySelector(".arch-hero");
+      if (archHero) archHero.addEventListener("mousemove", onArchHeroMouse);
+      syncChrome();
+    });
+    deck.on("slidechanged", syncChrome);
+  </script>
+</body>
+</html>
