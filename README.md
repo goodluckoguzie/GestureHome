@@ -1,46 +1,79 @@
-# GestureHome (legacy/web-bridge branch)
+# GestureHome
 
-Control a **Keyestudio Smart Home** kit with **webcam gestures** via **Chrome + FastAPI bridge**.
+**Hands-free smart home and security** — control a Keyestudio Smart Home kit with webcam gestures.
 
-**Phase 1:** both hands up → white LED on; both hands down → LED off.
+Webcam → MediaPipe → `home_controller.py` → USB serial (9600) → `gesture_home.ino` → **LED, door, fan, PIR security**.
 
-> **Note:** This branch documents the **browser + bridge** stack. For the simpler **Python + Arduino** approach, switch to `main`.
+| | |
+|---|---|
+| **Presentation** | **[View the IoT talk slides](https://goodluckoguzie.github.io/GestureHome/)** (Reveal.js, QAHE branded) |
+| **Live demo** | `python home_controller.py` on branch `main` |
+| **Kit** | Keyestudio PLUS + sensor shield (KS0085) |
 
-## Architecture (3 layers)
+---
 
-```text
-Chrome (camera + UI)  →  bridge.py (FastAPI)  →  USB serial  →  gesture_home.ino  →  LED
-```
+## Presentation
 
-| Layer | Path |
-|-------|------|
-| Web UI | `web/` - MediaPipe in browser |
-| Bridge | `bridge/bridge.py` - port **8090** |
-| Firmware | `firmware/gesture_home.ino` |
+5-minute QA Higher Education IoT talk — same Reveal.js style as the [PhD Viva deck](https://goodluckoguzie.github.io/Viva/).
 
-## Quick start
+**Slides:** https://goodluckoguzie.github.io/GestureHome/
 
-### 1. Firmware
+Open fullscreen in Chrome. Keys: → next, ↓ extra detail on Architecture / Stack, **S** speaker notes.
 
-Upload `firmware/gesture_home.ino` to Keyestudio PLUS (Arduino UNO). Test Serial Monitor at 9600: `LIGHTS_ON` / `LIGHTS_OFF`.
+---
 
-### 2. Bridge + web
+## Quick start (`main`)
 
 ```bash
 conda activate home
-pip install -r bridge/requirements.txt
-python bridge/bridge.py
-```
-
-Open **http://127.0.0.1:8090/** in Chrome.
-
-### 3. Gestures
-
-Both hands up → on. Both hands down → off. Manual buttons on the side panel.
-
-## Alternative on `main`
-
-```bash
+cd GestureHome
 git checkout main
-python home_controller.py   # OpenCV window, no browser
+pip install -r requirements.txt
+python home_controller.py
 ```
+
+Upload `firmware/gesture_home/gesture_home.ino` to the Keyestudio board. Serial: **9600 baud** (`/dev/ttyUSB0` or `/dev/ttyACM0`).
+
+### Gestures
+
+| Gesture | Hold | Command | House |
+|---------|------|---------|-------|
+| Closed fist | 3s | `LIGHTS_ON` | White LED on |
+| Open palm | 3s | `LIGHTS_OFF` | White LED off |
+| 1 / 2 / 3 fingers | 2s | `FAN_SPEED_*` | Fan speed |
+| Thumbs up | 2s | `FAN_STOP` | Fan off |
+| Two fists | 2s | `DOOR_TOGGLE` | Door servo |
+| Wave / two palms | 2s | `SECURITY_ON/OFF` | PIR alarm |
+
+Keyboard backup while the demo window is focused: `o` / `f` lights, `1` `2` `3` fan, `0` stop, `d` door, `s` security.
+
+---
+
+## Architecture
+
+```text
+Hands → webcam → MediaPipe → home_controller.py → USB 9600 → Arduino kit → LED · door · fan · PIR
+```
+
+Wireframe diagrams for teaching: `docs/gesturehome-wireframe.svg` (and variants in `docs/`).
+
+Local slides and assets: `talk/` — regenerate videos with `talk/scripts/`.
+
+---
+
+## Branches
+
+| Branch | Use |
+|--------|-----|
+| **`main`** | Laptop webcam + OpenCV (`home_controller.py`) — default |
+| **`upgrade/booth`** | Audience phones + projector booth |
+| **`legacy/web-bridge`** | Browser + FastAPI bridge (`web/` + `bridge/`) |
+
+See `docs/BRANCHES.md` and `GESTUREHOME_FOCUS_NOW.md` for booth setup and student wireframes.
+
+---
+
+## Links
+
+- **Presentation:** https://goodluckoguzie.github.io/GestureHome/
+- **Repository:** https://github.com/goodluckoguzie/GestureHome
